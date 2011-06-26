@@ -1,9 +1,9 @@
-#ifndef GFORT_PHYSICS_BOX2D_SETTINGS_H_
-#define GFORT_PHYSICS_BOX2D_SETTINGS_H_
+#ifndef GFORT_CORE_PHYSICS_BOX2D_SETTINGS_H_
+#define GFORT_CORE_PHYSICS_BOX2D_SETTINGS_H_
 
 #include <Box2D/Box2D.h>
 
-namespace GFort { namespace Physics
+namespace GFort{ namespace Core { namespace Physics
 {
 
 struct Box2dSettings
@@ -92,6 +92,6 @@ inline void Box2dSettings::RefreshDebugFlag()
     debug_flag_ += allowed_draw_COMs_			* b2DebugDraw::e_centerOfMassBit;
 }
 
-} } // namespace
+} } } // namespace
 
-#endif // GFORT_PHYSICS_BOX2D_SETTINGS_H_
+#endif // GFORT_CORE_PHYSICS_BOX2D_SETTINGS_H_

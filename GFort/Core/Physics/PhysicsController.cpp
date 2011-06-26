@@ -20,7 +20,7 @@
 
 #include "PhysicsController.h"
 
-namespace GFort { namespace Physics
+namespace GFort { namespace Core { namespace Physics
 {
 
 const float	kGravitationalField	= 9.81f;
@@ -147,4 +147,4 @@ void PhysicsController::Step(Box2dSettings* settings, const float32& deltaTime)
 }
 
 
-} } // namespace
+} } } // namespace

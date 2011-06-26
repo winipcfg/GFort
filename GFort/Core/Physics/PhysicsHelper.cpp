@@ -1,6 +1,6 @@
 #include "PhysicsHelper.h"
 
-namespace GFort { namespace Physics
+namespace GFort { namespace Core { namespace Physics
 {
 
 inline float32 PhysicsHelper::GetAngle(b2Vec2 center, b2Vec2 target)
@@ -238,4 +238,4 @@ b2Body* PhysicsHelper::CreateBoundedArea(
 	return groundBody;
 }
 
-} } // namespace
+} } } // namespace

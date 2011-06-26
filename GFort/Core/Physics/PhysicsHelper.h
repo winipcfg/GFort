@@ -1,9 +1,9 @@
-#ifndef GFORT_PHYSICS_PHYSICS_HELPER_H_
-#define GFORT_PHYSICS_PHYSICS_HELPER_H_
+#ifndef GFORT_CORE_PHYSICS_PHYSICS_HELPER_H_
+#define GFORT_CORE_PHYSICS_PHYSICS_HELPER_H_
 
 #include <Box2D/Box2D.h>
 
-namespace GFort { namespace Physics
+namespace GFort { namespace Core { namespace Physics
 {
 
 //Pixel to metres ratio. Box2D uses metres as the unit for measurement.
@@ -48,6 +48,6 @@ public:
 };
 
 
-} } // namespace
+} } } // namespace
 
-#endif // GFORT_PHYSICS_PHYSICS_HELPER_H_
+#endif // GFORT_CORE_PHYSICS_PHYSICS_HELPER_H_

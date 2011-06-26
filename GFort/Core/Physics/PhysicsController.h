@@ -18,15 +18,15 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_PHYSICS_PHYSICS_CONTROLLER_H_
-#define GFORT_PHYSICS_PHYSICS_CONTROLLER_H_
+#ifndef GFORT_CORE_PHYSICS_PHYSICS_CONTROLLER_H_
+#define GFORT_CORE_PHYSICS_PHYSICS_CONTROLLER_H_
 
 #include <Box2D/Box2D.h>
 #include <string>
 
 #include "Box2dSettings.h"
 
-namespace GFort { namespace Physics
+namespace GFort { namespace Core { namespace Physics
 {
 
 const int32 kMaxContactPoints = 2048;
@@ -93,6 +93,6 @@ protected:
 private:
 };
 
-} } // namespace
+} } } // namespace
 
-#endif // GFORT_PHYSICS_PHYSICS_CONTROLLER_H_
+#endif // GFORT_CORE_PHYSICS_PHYSICS_CONTROLLER_H_
