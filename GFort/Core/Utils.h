@@ -27,24 +27,6 @@ std::basic_ostream<A,B>& operator<<(std::basic_ostream<A,B>& _s, const std::list
 	return *s;
 }
 
-template <typename T> 
-T CLAMP(const T& num, const T& lowerBound, const T& upperBound) 
-{
-	return (num < lowerBound) ? lowerBound : (num > upperBound ? upperBound : num); 
-}
-
-template <typename T> 
-T SIGN(const T& num) 
-{ 
-    return (num < 0) ? -1 : 1; 
-}
-
-template <typename T> 
-T LERP(const T& value1, const T& value2, const float& factor)
-{
-    return value1 + (value2 - value1) * factor;
-}
-
 } // namespace
 
 #endif // GFORT_UTILS_H_
