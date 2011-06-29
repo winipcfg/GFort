@@ -40,12 +40,43 @@ public:
     static double RandomDouble()            { return rand() / (double)RAND_MAX; }
 
     /// Generate a variable between [min, max]
+    /// @param gen
+    /// @param min
+    /// @param max
     template <typename T>
     static T RandomBetween(boost::rand48& gen, const T& min, const T& max);
 
     /// Generate a variable between [min, max]
+    /// @param min
+    /// @param max
     template <typename T>
     static T RandomBetween(const T& min, const T& max);
+
+    /// Generate a random point in concentric 2d circle
+    /// @param gen
+    /// @param innerRadius
+    /// @param outerRadius
+    /// @param outX
+    /// @param outY
+    template <typename T>
+    static void RandomPointInConcentricCircle(
+        boost::rand48& gen,
+        const T& innerRadius, 
+        const T& outerRadius,
+        T& outX,
+        T& outY);
+
+    /// Generate a random point on 2d circle
+    /// @param gen
+    /// @param radius
+    /// @param outX
+    /// @param outY
+    template <typename T>
+    static void RandomPointOnCircle(
+        boost::rand48& gen,
+        const T& radius,
+        T& outX,
+        T& outY);
 
     //=====================================================================
     // Linear
@@ -75,8 +106,8 @@ public:
     static T Sign(const T& value)           { return (num < 0) ? -1 : 1; }
 };
 
-template <class T>
-T MathHelper::RandomBetween(boost::rand48& gen, const T& min, const T& max)
+template <typename T>
+inline T MathHelper::RandomBetween(boost::rand48& gen, const T& min, const T& max)
 {
     boost::uniform_real<T> mode(min, max);
     boost::variate_generator<
@@ -86,20 +117,48 @@ T MathHelper::RandomBetween(boost::rand48& gen, const T& min, const T& max)
     return vg();
 }
 
-template <class T>
-T MathHelper::RandomBetween(const T& min, const T& max)
+template <typename T>
+inline T MathHelper::RandomBetween(const T& min, const T& max)
 {
     return min + RandomDouble() * (max - min);
 }
 
+template <typename T>
+inline void MathHelper::RandomPointInConcentricCircle(
+    boost::rand48& gen,
+    const T& innerRadius, 
+    const T& outerRadius,
+    T& outX,
+    T& outY)
+{
+    // Find the random distance to the center
+    T distance = GFort::Core::MathHelper::RandomBetween(gen, innerRadius, outerRadius);
+
+    // Find the random angle in radian
+    float angle = GFort::Core::MathHelper::RandomBetween(gen, 1.0f, 2.0f * boost::math::constants::pi<float>());
+
+    outX = static_cast<T>(cos(angle) * distance);
+    outY = static_cast<T>(sin(angle) * distance);
+}
+
+template <typename T>
+inline void MathHelper::RandomPointOnCircle(
+    boost::rand48& gen,
+    const T& radius, 
+    T& outX,
+    T& outY)
+{
+    return RandomPointInConcentricCircle(gen, radius, radius, outX, outY);
+}
+
 template <typename T> 
-T MathHelper::Lerp(const T& value1, const T& value2, const float& factor)
+inline T MathHelper::Lerp(const T& value1, const T& value2, const float& factor)
 {
     return value1 + (value2 - value1) * factor;
 }
 
 template <typename T> 
-T MathHelper::Clamp(const T& value, const T& lowerBound, const T& upperBound) 
+inline T MathHelper::Clamp(const T& value, const T& lowerBound, const T& upperBound) 
 {
 	return (value < lowerBound) ? lowerBound : (value > upperBound ? upperBound : value); 
 }
