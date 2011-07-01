@@ -10,22 +10,13 @@
 namespace GFort
 {
 
-
-template<typename T>
-std::string ToString(T val) 
-{
-	std::ostringstream oss;
-	oss << val;
-	return oss.str();
-}
-
-template<typename A, typename B, typename C>
-std::basic_ostream<A,B>& operator<<(std::basic_ostream<A,B>& _s, const std::list<C>& l) {
-	std::basic_ostream<A,B>* s = &_s;
-	for(typename std::list<C>::const_iterator i = l.begin(); i != l.end(); ++i)
-		s = &( *s << *i );
-	return *s;
-}
+//template<typename A, typename B, typename C>
+//std::basic_ostream<A,B>& operator<<(std::basic_ostream<A,B>& _s, const std::list<C>& l) {
+//	std::basic_ostream<A,B>* s = &_s;
+//	for(typename std::list<C>::const_iterator i = l.begin(); i != l.end(); ++i)
+//		s = &( *s << *i );
+//	return *s;
+//}
 
 } // namespace
 
