@@ -30,7 +30,7 @@ namespace GFort { namespace Core
 struct IWritable
 {
     /// Returns the object in string presentation.
-    std::string ToString() const;
+    virtual std::string ToString() const = 0;
 };
 
 } } // namespace
