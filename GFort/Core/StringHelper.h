@@ -30,20 +30,28 @@ namespace GFort { namespace Core
 class StringHelper
 {
 public:
-    // Tokenizes a string s into tokens. Blank tokens are omitted.
+    /// Tokenizes a string s into tokens. Blank tokens are omitted.
+    /// @param s
+    /// @param delimiters
+    /// @param tokens
     static void Tokenize(const std::string& s,
                          const std::string& delimiters,
                          std::vector<std::string>& tokens);
 
-    // Tokenizes a string s into tokens. Blank tokens are omitted.
+    /// Tokenizes a string s into tokens. Blank tokens are omitted.
+    /// @param s
+    /// @param delimiters
     static std::vector<std::string> Tokenize(const std::string& s,
                                              const std::string& delimiters);
 
-    // Converts and Returns input object to string    
+    /// Converts and Returns input object to string   
+    /// @param object
     template <typename T>
     static std::string ToString(const T& object);
 
-    // Converts input object to string s
+    /// Converts input object to string s
+    /// @param object
+    /// @param s
     template <typename T>
     static void ToString(const T& object, std::string & s);
 };
