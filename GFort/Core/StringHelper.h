@@ -21,6 +21,7 @@
 #ifndef GFORT_CORE_STRING_HELPER_H_
 #define GFORT_CORE_STRING_HELPER_H_
 
+#include <sstream>
 #include <vector>
 #include <list>
 
