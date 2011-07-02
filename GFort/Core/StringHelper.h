@@ -22,6 +22,7 @@
 #define GFORT_CORE_STRING_HELPER_H_
 
 #include <vector>
+#include <list>
 
 namespace GFort { namespace Core 
 {
@@ -86,6 +87,15 @@ inline std::string StringHelper::ToString(const T& object)
     std::string s;
     ToString(object, s);
     return s;
+}
+
+template<typename A, typename B, typename C>
+std::basic_ostream<A,B>& operator<<(std::basic_ostream<A,B>& _s, const std::list<C>& l) 
+{
+    std::basic_ostream<A,B>* s = &_s;
+    for(typename std::list<C>::const_iterator i = l.begin(); i != l.end(); ++i)
+        s = &( *s << *i );
+    return *s;
 }
 
 template <typename T>
