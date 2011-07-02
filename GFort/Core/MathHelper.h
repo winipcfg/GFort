@@ -23,6 +23,8 @@
 
 #include <boost/math/constants/constants.hpp>
 #include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
 #include <cmath>
 
 namespace GFort { namespace Core 
@@ -103,7 +105,7 @@ public:
     /// Returns -1 if it is negative value. Else returns 1.
     /// @param value
     template <typename T> 
-    static T Sign(const T& value)           { return (num < 0) ? -1 : 1; }
+    static T Sign(const T& value)           { return (value < 0) ? -1 : 1; }
 };
 
 template <typename T>
