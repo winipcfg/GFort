@@ -23,9 +23,9 @@
 
 #include <cmath>
 
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-//#include <boost/numeric/ublas/vector.hpp>
+//#include <Eigen/Dense>
+//#include <Eigen/Geometry>
+#include <boost/numeric/ublas/vector.hpp>
 
 namespace GFort { namespace Core
 {
@@ -34,8 +34,8 @@ namespace GFort { namespace Core
 template <typename T>
 class Vector2
 {
-    typedef Eigen::Matrix<T, 2, 1, 0, 2, 1> Point;
-    //typedef boost::numeric::ublas::vector<T> Point;
+    //typedef Eigen::Matrix<T, 2, 1, 0, 2, 1> Point;
+    typedef boost::numeric::ublas::vector<T> Point;
 
 public:
     /// Constructor
@@ -120,13 +120,13 @@ private:
 template <typename T>
 struct Line
 {
-    typedef Eigen::ParametrizedLine<T, 2> LineType;
+    //typedef Eigen::ParametrizedLine<T, 2> LineType;
 
 public:
     /// Constructor
     Line()
     {
-        line_ = LineType::Through(start_.point_, end_.point_);
+        //line_ = LineType::Through(start_.point_, end_.point_);
     }
 
     /// Constructor
@@ -134,7 +134,7 @@ public:
     {
         start_ = p0;
         end_ = p1;
-        line_ = LineType::Through(p0.point_, p1.point_);
+        //line_ = LineType::Through(p0.point_, p1.point_);
     }
 
     /// Gets the starting point of the line.
@@ -159,7 +159,7 @@ public:
 
 private:
     // Stores the line
-    LineType        line_;
+    //LineType        line_;
 
     // Stores the start/end point of the line
     Vector2<T>      start_;
