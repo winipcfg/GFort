@@ -39,13 +39,14 @@ class Vector2
 
 public:
     /// Constructor
-    Vector2() {}
+    Vector2() { this->point_.resize(2); }
 
     /// Constructor
     /// @param x
     /// @param y
     Vector2(const T& x, const T& y)
     {
+        this->point_.resize(2);
         this->point_[0] = x;
         this->point_[1] = y;
     }
@@ -59,10 +60,10 @@ public:
     }
     
     /// Gets the position.
-    T X() const                         { return point_.x(); }
+    T X() const                         { return point_[0]; }
 
     /// Gets the position.
-    T Y() const                         { return point_.y(); }
+    T Y() const                         { return point_[1]; }
 
     /// Gets squared distance of a point p to the object. 
     /// @param p
@@ -72,8 +73,8 @@ public:
     /// @param p
     T DistanceSquared(const Vector2& p) const
     { 
-        return std::pow((p.point_.x() - this->point_.x()), 2)
-            + std::pow((p.point_.y() - this->point_.y()), 2);
+        return std::pow((p.point_[0] - this->point_[0]), 2)
+            + std::pow((p.point_[1] - this->point_[1]), 2);
     }
 
 public:
@@ -100,16 +101,16 @@ struct Rectangle
     }
 
     /// Gets the position of the rectangle.
-    T X() const             { return position_.x(); }
+    T X() const             { return position_[0]; }
 
     /// Gets the position of the rectangle.
-    T Y() const             { return position_.y(); }
+    T Y() const             { return position_[1]; }
 
     /// Gets the width of the rectangle.
-    T Width() const         { return size_.x(); }
+    T Width() const         { return size_[0]; }
 
     /// Gets the height of the rectangle.
-    T Height() const        { return size_.y(); }
+    T Height() const        { return size_[1]; }
 
 private:
     Vector2<T>   	position_;
