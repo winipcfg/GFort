@@ -31,7 +31,7 @@ public:
     /// Start attack.
     /// @param currentTime Current time
     /// @param instantAttack If true, the weapon will instantly do an attack if appropiate
-    virtual void StartAttack(const double& currentTime, bool instantAttack)= 0;
+    virtual void StartAttack(const double& currentTime, bool instantAttack) = 0;
 
     /// Stops attack.
     /// @param currentTime Current time
