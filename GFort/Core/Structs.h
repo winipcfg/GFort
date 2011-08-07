@@ -152,11 +152,11 @@ public:
 
     /// Gets distance of a point p to its projection onto the line. 
     /// @param p
-    T Distance (const Vector2<T>& p) const          { return line_.distance(p); }
+    //T Distance (const Vector2<T>& p) const          { return line_.distance(p); }
 
     /// Gets squared distance of a point p to its projection onto the line. 
     /// @param p
-    T DistanceSquared (const Vector2<T>& p) const   { return line_.squaredDistance(p); }
+    //T DistanceSquared (const Vector2<T>& p) const   { return line_.squaredDistance(p); }
 
 private:
     // Stores the line
