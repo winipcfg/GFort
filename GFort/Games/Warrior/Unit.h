@@ -21,13 +21,14 @@
 #ifndef WARRIOR_UNIT_H_
 #define WARRIOR_UNIT_H_
 
+#include <GFort/Core/Game/IEntity.h>
 #include "PlayerState.h"
 
 namespace Warrior 
 {
 
 /// Class of basic unit
-class Unit 
+class Unit : public GFort::Core::Game::IEntity
 {
 public:
     /// Constructor.
