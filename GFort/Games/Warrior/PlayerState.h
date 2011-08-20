@@ -18,43 +18,30 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PLAYER_STAT_H_
-#define WARRIOR_PLAYER_STAT_H_
+#ifndef WARRIOR_PLAYER_STATE_H_
+#define WARRIOR_PLAYER_STATE_H_
 
 namespace Warrior 
 {
-
-/// Statistics of a saved Game.
-struct GameStat
+    
+enum PlayerState
 {
-    /// Whether it is Survival Mode.
-    bool SurvivalMode;
-
-    /// Remain HP of Player (Survival Mode).
-    int HP;
-
-    /// Total number of battles.
-    int TotalBattles;
-
-    /// Total number of kills in all battles.
-    long TotalKills;
-
-    /// Total number of headshots.
-    long Headshots;
-
-    /// Total number of death in all battles.
-    int TotalDeaths;
-
-    /// Total number of slash in all battles.
-    int TotalSlashCount;
-
-    /// Maximum combos in all battle.
-    int MaximumCombos;
-
-    /// Total number of item used.
-    int NumItemsUsed;
+    /// Player can move
+    kIdle,
+    /// Player can move
+    kWalking,
+    /// Player can move
+    kRunning,
+    /// Player cannot be controlled
+    kCharging, 
+    /// Player cannot be controlled
+    kSlicing,       
+    /// Player cannot be controlled
+    kLanding,
+    /// Player cannot be controlled
+    kDying,
 };
 
 } // namespace
 
-#endif // WARRIOR_PLAYER_STAT_H_
+#endif // WARRIOR_PLAYER_STATE_H_
