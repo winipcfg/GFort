@@ -51,7 +51,7 @@ public:
 	~PhysicsController();
 
 	/// Gets the world.
-	const b2World* World() const     { return world_; }
+	b2World* World()                            { return world_; }
 	
 	/// Assign the world to controller.
     /// @param world The new world
