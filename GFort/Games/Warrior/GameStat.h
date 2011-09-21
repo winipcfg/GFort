@@ -27,6 +27,9 @@ namespace Warrior
 /// Statistics of a saved Game.
 struct GameStat
 {
+    /// Constructor.
+    GameStat();
+
     /// Whether it is Survival Mode.
     bool SurvivalMode;
 
@@ -54,6 +57,19 @@ struct GameStat
     /// Total number of item used.
     int NumItemsUsed;
 };
+
+inline GameStat::GameStat()
+    : SurvivalMode(false),
+      HP(0),
+      TotalBattles(0),
+      TotalKills(0),
+      Headshots(0),
+      TotalDeaths(0),
+      TotalSlashCount(0),
+      MaximumCombos(0),
+      NumItemsUsed(0)
+{
+}
 
 } // namespace
 

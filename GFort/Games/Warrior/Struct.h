@@ -18,38 +18,52 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PLAYER_STATE_H_
-#define WARRIOR_PLAYER_STATE_H_
+#ifndef WARRIOR_STRUCT_H_
+#define WARRIOR_STRUCT_H_
 
 namespace Warrior 
 {
     
-enum PlayerState
+/// Facing direction of units.
+enum FacingDirection
 {
-    /// Player can move
-    kPlayerStateIdle,
+    /// Unit face to Left.
+    kFacingLeft = 0,
 
-    /// Player can move
-    kPlayerStateWalk,
+    /// Unit face to Right.
+    kFacingRight = 1,
+};
 
-    /// Player can move
-    kPlayerStateRun,
+/// Animation type of units.
+enum UnitAnimationType
+{
+    kUnitAnimationIdle,
+    kUnitAnimationRun,
+    kUnitAnimationAttack,
+};
 
-    /// Player begin to slice. The unit cannot be controlled
-    kPlayerStateSliceBegin,
+/// Action type of units. Each unit has only 1 action.
+enum UnitActionType
+{
+    /// The unit do nothing.
+    kUnitActionTypeIdle,
 
-    /// Player end to slice. The unit cannot be controlled until it changes back to idle
-    kPlayerStateSliceEnd,  
+    /// The unit do move.
+    kUnitActionTypeWalk,
 
-    /// Player cannot be controlled
-    kCharging, 
-         
-    /// Player cannot be controlled
-    kLanding,
-    /// Player cannot be controlled
-    kDying,
+    /// The unit do move with faster speed.
+    kUnitActionTypeRun,
+
+    /// The unit do attack.
+    kUnitActionTypeAttack,
+    
+    /// The unit is charging for powerful attack.
+    kUnitActionTypeCharge, 
+
+    /// The unit is charging for defense.
+    kUnitActionTypeDefense, 
 };
 
 } // namespace
 
-#endif // WARRIOR_PLAYER_STATE_H_
+#endif // WARRIOR_STRUCT_H_

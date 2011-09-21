@@ -18,38 +18,40 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PLAYER_STATE_H_
-#define WARRIOR_PLAYER_STATE_H_
+#ifndef WARRIOR_ENEMY_H_
+#define WARRIOR_ENEMY_H_
+
+#include "Unit.h"
 
 namespace Warrior 
 {
-    
-enum PlayerState
+
+/// Stores enemy information
+class Enemy : public Unit
 {
-    /// Player can move
-    kPlayerStateIdle,
+public:
+    /// Constructor.
+    Enemy();
+    
+    /// Gets whether the unit can perform attack.
+    virtual const bool CanPerformAttack() const;
+                
+private:    
+};  
 
-    /// Player can move
-    kPlayerStateWalk,
+    
+inline Enemy::Enemy()
+{
+    lives_ = 1;
+}
 
-    /// Player can move
-    kPlayerStateRun,
-
-    /// Player begin to slice. The unit cannot be controlled
-    kPlayerStateSliceBegin,
-
-    /// Player end to slice. The unit cannot be controlled until it changes back to idle
-    kPlayerStateSliceEnd,  
-
-    /// Player cannot be controlled
-    kCharging, 
-         
-    /// Player cannot be controlled
-    kLanding,
-    /// Player cannot be controlled
-    kDying,
-};
-
+inline const bool Enemy::CanPerformAttack() const
+{
+    if (1)
+        return true;
+    return false;
+}   
+    
 } // namespace
 
-#endif // WARRIOR_PLAYER_STATE_H_
+#endif // WARRIOR_ENEMY_H_

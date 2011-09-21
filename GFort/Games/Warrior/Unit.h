@@ -22,7 +22,7 @@
 #define WARRIOR_UNIT_H_
 
 #include <GFort/Core/Game/IEntity.h>
-#include "PlayerState.h"
+#include "Struct.h"
 
 namespace Warrior 
 {
@@ -31,34 +31,70 @@ namespace Warrior
 class Unit : public GFort::Core::Game::IEntity
 {
 public:
+    typedef short LifeType;
+
+public:
     /// Constructor.
     Unit();
     
     /// Gets whether the unit is alive.
-    const bool Alive() const                    { return lives_ >= 0; }
+    const bool Alive() const                        { return lives_ >= 0; }
 
     /// Gets the health point of the unit.
-    const short Lives() const                   { return lives_; }
+    const LifeType Lives() const                    { return lives_; }
+
+    /// Gets the state of Player
+    const UnitActionType CurrentAction() const      { return current_action_; }
+
+    /// Gets whether the unit can perform attack.
+    virtual const bool CanPerformAttack() const     { return false; }
+
+    /// Takes damage. Returns true if it is still alive.
+    /// @param damage
+    virtual const bool TakeDamage(const short& damage);
 
     /// Kill the unit.
-    virtual void Die();
+    virtual void Die()                              { lives_ = 0; }
 
-    /// Sets lives of the unit.
-    virtual void SetAlive(const bool& value)    { lives_ = value; }
+    /// Sets the lives of the unit.
+    /// @param value
+    virtual void SetLives(const LifeType& value)    { lives_ = value; }
+
+    /// Sets the action of the unit. Returns true if action changed.
+    /// @param value
+    const bool SetAction(const UnitActionType& value);
     
 protected:
     // Stores the live of the unit.
-    short           lives_;
+    LifeType                    lives_;
 
     // Stores the facing of the unit. (False - Left, True - Right)
-    bool            facing_;
+    FacingDirection             facing_;
+
+    UnitActionType              current_action_;
 };  
     
 inline Unit::Unit()
+    : lives_(1),
+      current_action_(kUnitActionTypeIdle)
 {
-    lives_ = 1;
+}
+
+inline const bool Unit::TakeDamage(const short& damage)
+{
+    lives_ -= damage;
+    return (lives_ > 0);
 }
     
+inline const bool Unit::SetAction(const UnitActionType& value)
+{
+    if (current_action_ != value)
+    {
+        current_action_ = value;    
+        return true;
+    }
+    return false;
+}
     
 } // namespace
 
