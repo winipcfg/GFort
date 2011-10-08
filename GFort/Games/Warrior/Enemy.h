@@ -32,6 +32,12 @@ class Enemy : public Unit
 public:
     /// Constructor.
     Enemy();
+
+    /// Destructor.
+    ~Enemy();
+
+    /// Reset all parameters.
+    virtual void Reset();
     
     /// Gets whether the unit can perform attack.
     virtual const bool CanPerformAttack() const;
@@ -41,6 +47,14 @@ private:
 
     
 inline Enemy::Enemy()
+{
+}
+
+inline Enemy::~Enemy()
+{
+}
+
+inline void Enemy::Reset()
 {
     lives_ = 1;
 }

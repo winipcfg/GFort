@@ -23,7 +23,6 @@
 
 #include "Unit.h"
 #include "Weapon.h"
-#include "PlayerState.h"
 
 namespace Warrior 
 {
@@ -40,37 +39,33 @@ public:
 
     /// Destructor.
     ~Player();
-        
-    /// Gets the state of Player
-    const PlayerState State() const             { return state_; }
-    
-    /// Gets whether Player is landing.
-    bool IsLanding() const                      { return state_ == kLanding; }
 
-    /// Gets whether Player can perform attack.
+    /// Reset all parameters.
+    virtual void Reset();
+        
+    /// Gets whether the unit can perform attack.
     virtual const bool CanPerformAttack() const;
-    
-    /// Sets the state of Player.
-    /// @param state
-    void SetState(const PlayerState& state)     { state_ = state; }
-        
-private:    
-    // Stores the state of the Player
-    PlayerState     state_;
 
+    /// Gets whether the unit is under control and able to do action assigned.
+    virtual const bool IsUnderControl() const;
+            
+private:    
     // Stores the weapon information
     Weapon          weapon_;
 };  
 
     
 inline Player::Player()
-    : state_(kPlayerStateIdle)
 {
-    lives_ = kDefaultLives;
 }
 
 inline Player::~Player()
 {
+}
+
+inline void Player::Reset()
+{
+    lives_ = kDefaultLives;
 }
 
 inline const bool Player::CanPerformAttack() const
@@ -78,6 +73,13 @@ inline const bool Player::CanPerformAttack() const
     if (current_action_ == kUnitActionTypeIdle ||
         current_action_ == kUnitActionTypeWalk ||
         current_action_ == kUnitActionTypeRun)
+        return true;
+    return false;
+}    
+
+inline const bool Player::IsUnderControl() const
+{
+    if (Alive())
         return true;
     return false;
 }    
