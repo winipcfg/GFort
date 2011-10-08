@@ -39,7 +39,8 @@ public:
     //=====================================================================
 
     /// Generate a random double between [0, 1]
-    static double RandomDouble()            { return rand() / (double)RAND_MAX; }
+    template <typename T>
+    static T RandomDouble()            { return (T)rand() / (T)RAND_MAX; }
 
     /// Generate a variable between [min, max]
     /// @param gen
@@ -122,7 +123,7 @@ inline T MathHelper::RandomBetween(boost::rand48& gen, const T& min, const T& ma
 template <typename T>
 inline T MathHelper::RandomBetween(const T& min, const T& max)
 {
-    return min + RandomDouble() * (max - min);
+    return min + RandomDouble<T>() * (max - min);
 }
 
 template <typename T>
