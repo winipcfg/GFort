@@ -21,6 +21,11 @@
 #ifndef WARRIOR_STRUCT_H_
 #define WARRIOR_STRUCT_H_
 
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point_xy.hpp>
+#include <boost/geometry/geometries/linestring.hpp>
+#include <boost/geometry/geometries/polygon.hpp>
+
 namespace Warrior 
 {
     
@@ -53,7 +58,7 @@ enum UnitActionType
 
     /// The unit do move with faster speed.
     kUnitActionTypeRun,
-
+    
     /// The unit do attack.
     kUnitActionTypeAttack,
     
@@ -63,6 +68,18 @@ enum UnitActionType
     /// The unit is charging for defense.
     kUnitActionTypeDefense, 
 };
+
+enum UnitBehaviorType
+{    
+    /// The unit do chase on a target.
+    kUnitBehaviorTypeChase,
+
+    /// The unit do evade from a target.
+    kUnitBehaviorTypeEvade,
+};
+
+typedef boost::geometry::model::d2::point_xy<float> BPoint;
+typedef boost::geometry::model::polygon<BPoint >    BPolygon;
 
 } // namespace
 
