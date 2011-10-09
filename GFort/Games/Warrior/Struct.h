@@ -79,6 +79,7 @@ enum UnitBehaviorType
 };
 
 typedef boost::geometry::model::d2::point_xy<float> BPoint;
+typedef boost::geometry::model::linestring<BPoint > BLine;
 typedef boost::geometry::model::polygon<BPoint >    BPolygon;
 
 } // namespace
