@@ -24,6 +24,8 @@
 #include <vector>
 #include <GFort/Core/Game/IEntity.h>
 #include <GFort/Games/Warrior/UnitAction.h>
+#include <GFort/Core/Physics/PhysicsController.h>
+#include <GFort/Core/Physics/PhysicsHelper.h>
 #include "Struct.h"
 
 namespace Warrior 
@@ -33,43 +35,56 @@ namespace Warrior
 class Unit : public GFort::Core::Game::IEntity
 {
 public:
-    typedef short LifeType;
-
-public:
     /// Constructor.
     Unit();
     
     /// Gets whether the unit is alive.
-    const bool Alive() const                        { return lives_ > 0; }
+    const bool Alive() const                                { return lives_ > 0; }
         
-    /// Gets the state of the unit.
-    const UnitActionType CurrentAction() const      { return current_action_; }
-
     /// Gets whether the unit can perform attack.
-    virtual const bool CanPerformAttack() const     { return false; }
+    virtual const bool CanPerformAttack() const             { return false; }
 
     /// Gets whether the unit is under control and able to do action assigned.
-    virtual const bool IsUnderControl() const       { return true; }
+    virtual const bool IsUnderControl() const               { return true; }
 
     /// Takes damage. Returns true if it is still alive.
     /// @param damage
     virtual const bool TakeDamage(const short& damage);
 
     /// Kill the unit.
-    virtual void Die()                              { lives_ = 0; }
+    virtual void Die()                                      { lives_ = 0; }
 
     /// Reset all parameters.
     virtual void Reset();    
 
-    /// Sets the action of the unit. Returns true if action changed.
-    /// @param value
-    const bool SetAction(const UnitActionType& value);
+    //---------------------------------------------------------------
+    // Physics
+    //---------------------------------------------------------------
+    /// Gets the physics body.
+    b2Body* Body()                                          { return body_; }
+
+    /// Assign physics body to the unit.
+    /// @param body
+    void SetBody(b2Body* body)                              { body_ = body; }
+    
+    //---------------------------------------------------------------
+    // Actions
+    //---------------------------------------------------------------
+    /// Gets current action of the unit.
+    const UnitAction CurrentAction() const                  { return action_; }
+
+    /// Issue command to the unit. 
+    /// If replace is set as true, the action will replace current and pending actions.
+    /// If replace is set as false, the action will go to pending list.
+    /// @param action
+    /// @param replace
+    void IssueCommand(const UnitAction& action, const bool& replace);
 
     //---------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------
     /// Gets maximum health point of the unit.
-    const LifeType MaxLives() const                         { return max_lives_; }
+    const short MaxLives() const                            { return max_lives_; }
 
     /// Gets the walk speed of the unit.
     const float WalkSpeed() const                           { return walk_speed_; }
@@ -78,7 +93,7 @@ public:
     const float RunSpeed() const                            { return run_speed_; }
 
     /// Gets the health point of the unit.
-    const LifeType Lives() const                            { return lives_; }
+    const short Lives() const                               { return lives_; }
 
     /// Gets facing direction.
     const FacingDirection& Facing()                         { return facing_; }
@@ -88,7 +103,7 @@ public:
 
     /// Sets maximum lives of the unit.
     /// @param value
-    virtual void SetMaxLives(const LifeType& value)         { max_lives_ = value; }
+    virtual void SetMaxLives(const short& value)            { max_lives_ = value; }
 
     /// Sets walk speed of the unit.
     /// @param value
@@ -100,7 +115,7 @@ public:
 
     /// Sets the lives of the unit.
     /// @param value
-    virtual void SetLives(const LifeType& value)            { lives_ = value; }
+    virtual void SetLives(const short& value)               { lives_ = value; }
 
     /// Sets facing dircection of the unit.
     /// @param value
@@ -111,56 +126,24 @@ public:
     virtual void SetFloatingInTheAir(const bool& value)     { floating_in_the_air_ = value; }
     
 protected:
+    // Physics body
+    b2Body*                     body_;
+
     // Attributes
-    LifeType                    max_lives_;
+    short                       max_lives_;
     float                       walk_speed_;
     float                       run_speed_;
 
     // Instances
-    LifeType                    lives_;
+    short                       lives_;
     FacingDirection             facing_;
-    UnitActionType              current_action_;
-    std::vector<UnitAction>     actions_;
+
+public:
+    UnitAction                  action_;
+    std::deque<UnitAction >     pending_actions_;
+
     bool                        floating_in_the_air_;   
-};  
-    
-inline Unit::Unit()
-    : max_lives_(0),
-      walk_speed_(0),
-      run_speed_(0),
-      lives_(0),
-      current_action_(kUnitActionTypeIdle),
-      facing_(kFacingRight),
-      floating_in_the_air_(false)
-{
-}
-
-inline const bool Unit::TakeDamage(const short& damage)
-{
-    lives_ -= damage;
-    return (lives_ > 0);
-}
-
-inline void Unit::Reset()
-{
-    //max_lives_ = 0;
-    //walk_speed_ = 0;
-    //run_speed_ = 0;
-    lives_ = 1;
-    current_action_ = kUnitActionTypeIdle;
-    facing_ = kFacingRight;
-    floating_in_the_air_ = false;
-}
-    
-inline const bool Unit::SetAction(const UnitActionType& value)
-{
-    if (current_action_ != value)
-    {
-        current_action_ = value;    
-        return true;
-    }
-    return false;
-}
+};    
     
 } // namespace
 

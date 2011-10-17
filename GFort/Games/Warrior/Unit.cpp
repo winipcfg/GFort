@@ -18,59 +18,60 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_UNIT_ACTION_H_
-#define WARRIOR_UNIT_ACTION_H_
-
-#include "Struct.h"
-//#include "Unit.h"
+#include "Unit.h"
 
 namespace Warrior 
+{  
+    
+Unit::Unit()
+    : max_lives_(0),
+      walk_speed_(0),
+      run_speed_(0),
+      lives_(0),
+      facing_(kFacingRight),
+      floating_in_the_air_(false)
 {
+}
 
-class UnitNode;
-
-struct UnitAction
+const bool Unit::TakeDamage(const short& damage)
 {
-    UnitActionType  ActionType;
-    float           PositionX;
-    float           PositionY;    
-    bool            Interruptible;
-    UnitNode*       Target;
+    lives_ -= damage;
+    return (lives_ > 0);
+}
 
-    /// Constructor.
-    UnitAction()
-        : ActionType(kUnitActionTypeIdle),
-          PositionX(0),
-          PositionY(0),
-          Interruptible(true),
-          Target(NULL)
+void Unit::Reset()
+{
+    //max_lives_ = 0;
+    //walk_speed_ = 0;
+    //run_speed_ = 0;
+    lives_ = 1;
+    action_.Reset();
+    facing_ = kFacingRight;
+    floating_in_the_air_ = false;
+}
+
+void Unit::IssueCommand(const UnitAction& action, const bool& replace)
+{
+    if (replace)
     {
+        if (this->action_.Interruptible)
+        {
+            //CCLOG("Replace current action");
+            this->action_ = action;
+            this->pending_actions_.clear();
+            //UpdateAction();
+            //UpdateActionLabel();
+        }
+        else
+        {
+            //CCLOG("Cannot replace current action as it cannot be interrupted");
+        }
     }
-
-    /// Constructor.
-    UnitAction(const UnitActionType& actionType, 
-               const float& positionX, 
-               const float& positionY, 
-               const bool& interruptible,
-               UnitNode* target)
-        : ActionType(actionType),
-          PositionX(positionX),
-          PositionY(positionY),
-          Interruptible(interruptible),
-          Target(NULL)
+    else
     {
+        //CCLOG("Push a new pending action");
+        this->pending_actions_.push_back(action); 
     }
-
-    void Reset()
-    {
-        ActionType = kUnitActionTypeIdle;
-        PositionX = 0;
-        PositionY = 0;
-        Interruptible = true;
-        Target = NULL;
-    }
-};
-
+}
+    
 } // namespace
-
-#endif // WARRIOR_UNIT_ACTION_H_

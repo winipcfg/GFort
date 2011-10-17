@@ -44,15 +44,15 @@ Trail::~Trail()
 void Trail::Push(const BPoint& point)
 {   
     if (point_list_.size() > 0)
-        length_ += boost::geometry::distance(point, point_list_.front());   
+        length_ += boost::geometry::distance(point, point_list_.back());   
 
     //CCLOG("Slice Length is now changed to %f", length_);
 
-    point_list_.push_front(point);
+    point_list_.push_back(point);
     if (max_points_ > 0 &&
         point_list_.size() - max_points_ > 0)
     {
-        point_list_.pop_back();
+        point_list_.pop_front();
         needs_update_ = true;
     }
 }
@@ -69,7 +69,7 @@ void Trail::Pop(const short& numPoints)
         short n = (point_list_.size() - numPoints > 0) ? numPoints : point_list_.size();
         while (n > 0)
         {
-            point_list_.pop_back();
+            point_list_.pop_front();
             n--;
         }
         needs_update_ = true;
@@ -109,7 +109,7 @@ void Trail::Clear()
 const BPoint& Trail::GetStartPosition() const
 {
     if (point_list_.size() > 0)
-        return point_list_.back();
+        return point_list_.front();
     else
         return BPoint(0, 0);
 }
@@ -117,7 +117,7 @@ const BPoint& Trail::GetStartPosition() const
 const BPoint& Trail::GetEndPosition() const
 {
     if (point_list_.size() > 0)
-        return point_list_.front();
+        return point_list_.back();
     else
         return BPoint(0, 0);
 }
@@ -136,12 +136,21 @@ const float Trail::Displacement() const
         return boost::geometry::distance(point_list_.front(), point_list_.back());
 }
 
-bool Trail::Collide(const BPolygon& region)
+bool Trail::Within(const BPolygon& region)
 {
-    typedef boost::geometry::detail::overlay::turn_info<BPoint > turn_info;
-    
+    for (std::list<BPoint >::iterator it = point_list_.begin(); 
+        it != point_list_.end(); 
+        ++it)
+    {
+        if (!boost::geometry::within(*it, region))
+            return false;
+    }
+    return true;
+}
+
+bool Trail::Collide(const BPolygon& region, std::vector<BTurnInfo>& turns)
+{    
     BLine line;
-    std::vector<turn_info> turns;
     boost::geometry::detail::get_turns::no_interrupt_policy policy;
     
     for (std::list<BPoint >::iterator it = point_list_.begin(); 
@@ -172,7 +181,7 @@ void Trail::SetMaxPoints(const short& value)
             short n = point_list_.size() - max_points_;
             while (n > 0)
             {
-                point_list_.pop_back();
+                point_list_.pop_front();
                 n--;
             }
         }

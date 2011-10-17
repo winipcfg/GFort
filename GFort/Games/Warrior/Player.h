@@ -70,9 +70,9 @@ inline void Player::Reset()
 
 inline const bool Player::CanPerformAttack() const
 {
-    if (current_action_ == kUnitActionTypeIdle ||
-        current_action_ == kUnitActionTypeWalk ||
-        current_action_ == kUnitActionTypeRun)
+    if (action_.ActionType == kUnitActionTypeIdle ||
+        action_.ActionType == kUnitActionTypeWalk ||
+        action_.ActionType == kUnitActionTypeRun)
         return true;
     return false;
 }    

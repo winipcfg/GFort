@@ -63,7 +63,7 @@ public:
     const BPoint& GetEndPosition() const;
 
     /// Gets the trail nodes.
-    const std::list<BPoint > Path() const        { return point_list_; }
+    const std::list<BPoint >& Path() const        { return point_list_; }
 
     /// Gets the length of trail.
     const float Length();
@@ -71,10 +71,15 @@ public:
     /// Gets the displacement between start and end point of trail.
     const float Displacement() const;
 
+    /// Returns true if it is inside specified region.
+    /// @param region
+    bool Within(const BPolygon& region);
+
     /// Returns true if it collides with region.
     /// @param region
-    bool Collide(const BPolygon& region);
-
+    /// @param[out] turns intersection points
+    bool Collide(const BPolygon& region, std::vector<BTurnInfo>& turns);
+    
     /// Sets maximum number of nodes allowed. -1 means no limit
     /// @param value
     void SetMaxPoints(const short& value);
