@@ -26,6 +26,8 @@ namespace GFort { namespace Core { namespace Physics
 const float	kGravitationalField	= 9.81f;
 
 PhysicsController::PhysicsController()
+    : world_(NULL),
+      num_contact_points_(0)
 {
 	b2Vec2 gravity;
 	gravity.Set(0.0f, 0.0f);
