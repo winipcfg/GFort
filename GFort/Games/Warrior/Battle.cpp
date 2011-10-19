@@ -27,129 +27,117 @@
 namespace Warrior 
 {
 
-const float32 kWorldWidth           = 960;
-const float32 kWorldHeight          = 320;
-    
-const b2Vec2 kPlayerStartPosition   = b2Vec2(100, 100);
+const b2Vec2 kPlayerStartPosition   = b2Vec2(100, 150);
 const int kPlayerWidth              = 32;
 const int kPlayerHeight             = 48;
 
 const int kPlayerMoveSpeed          = 3;
 const int kPlayerRunSpeed           = 5;
+
+const short kMapBoundary            = 20;
     
 Battle::Battle()
-    : ground_body_(NULL),
-      player_body_(NULL),
-      mouse_point_(NULL),
+    : mouse_point_(NULL),
       mouse_joint_(NULL)
-{
-    GFort::Core::Physics::PhysicsController();
-		
-    phys_controller_.SetDefaultGravity(); 
-	
+{		
+    phys_controller_.SetDefaultGravity(); 	
     phys_controller_.World()->SetContinuousPhysics(true);                    
 	
-    b2BodyDef bodyDef;
-    ground_body_ = phys_controller_.World()->CreateBody(&bodyDef);
-	
-    short boundary = 20;
-    GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
-        phys_controller_.World(),
-        b2Vec2(boundary, boundary),
-        kWorldWidth-boundary*2,
-        kWorldHeight-boundary*2); 
-        
     this->Reset();
 }
 
 
 Battle::~Battle()
 {
-    if (phys_controller_.World() != NULL)
-    {
-        if (ground_body_ != NULL)
-        {
-            phys_controller_.World()->DestroyBody(ground_body_);
-            ground_body_ = NULL;
-        }            
-    }
 }
 
 void Battle::Initialize()
-{        
-    // Ground
-    GFort::Core::Physics::PhysicsHelper::CreateBox(
+{   
+    b2Body* body;
+
+    // Create boundary
+    body = GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
         phys_controller_.World(),
-        b2Vec2(kWorldWidth / 2, 50 / 2),
-        kWorldWidth,
-        50);
+        b2Vec2(kMapBoundary, kMapBoundary),
+        map_.Width() - kMapBoundary * 2,
+        map_.Height() - kMapBoundary * 2);
+
+    // Ground
+    body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+        phys_controller_.World(),
+        b2_staticBody,
+        b2Vec2(map_.Width() / 2, map_.Landscape() / 2),
+        map_.Width(),
+        map_.Landscape());
+    map_.Contents().push_back(body);
 
     // Create Player
-    player_body_ = GFort::Core::Physics::PhysicsHelper::CreateBox(
-                                                phys_controller_.World(),
-                                                kPlayerStartPosition,
-                                                kPlayerWidth,
-                                                kPlayerHeight);
+    body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+        phys_controller_.World(),
+        kPlayerStartPosition,
+        kPlayerWidth,
+        kPlayerHeight);
 
-    player_body_->SetFixedRotation(false);
+    body->SetFixedRotation(false);
     
     // Set the dynamic body fixture.
-	b2Fixture* fixture = player_body_->GetFixtureList();	
+	b2Fixture* fixture = body->GetFixtureList();	
 	fixture[0].SetDensity(1.0f);
 	fixture[0].SetFriction(0.3f);
 	fixture[0].SetRestitution(0.4f);	
-	player_body_->ResetMassData();
+	body->ResetMassData();
 
-    player_.SetBody(player_body_);    
+    player_.SetBody(body);    
 }
     
 bool Battle::MouseDown(const b2Vec2& p)
 {
     phys_controller_.MouseDown(p);
         
-    if (mouse_point_ == NULL)
-    {
-        mouse_point_ = GFort::Core::Physics::PhysicsHelper::CreateCircle(
-            phys_controller_.World(),
-            p,
-            10);
-        mouse_point_->SetType(b2_staticBody);
-    }    
-    
-    mouse_world_ = b2Vec2(p.x/PTM_RATIO, p.y/PTM_RATIO);
-    b2MouseJointDef md;
-    {   
-        md.bodyA = mouse_point_;
-        md.bodyB = player_body_;
-        md.target = mouse_world_;
-        
-        //md.maxForce = (player_->GetMass() < 16.0)? (1000.0f * player_->GetMass()) : float32(16000.0);
-        
-        md.maxForce = 1000.0f * 16;
-        
-        mouse_joint_ = (b2MouseJoint*) phys_controller_.World()->CreateJoint(&md);
-        player_body_->SetAwake(true);
-    }    
-    
-    
+    //if (mouse_point_ == NULL)
+    //{
+    //    mouse_point_ = GFort::Core::Physics::PhysicsHelper::CreateCircle(
+    //        phys_controller_.World(),
+    //        b2_staticBody,
+    //        p,
+    //        10);
+    //}    
+    //
+    //mouse_world_ = b2Vec2(p.x/PTM_RATIO, p.y/PTM_RATIO);
+    //b2MouseJointDef md;
+    //{   
+    //    md.bodyA = mouse_point_;
+    //    md.bodyB = player_.Body();
+    //    md.target = mouse_world_;
+    //    
+    //    //md.maxForce = (player_.Body()->GetMass() < 16.0)? (1000.0f * player_.Body()->GetMass()) : float32(16000.0);        
+    //    md.maxForce = 1000.0f * 16;
+    //    
+    //    mouse_joint_ = (b2MouseJoint*) phys_controller_.World()->CreateJoint(&md);
+    //    player_.Body()->SetAwake(true);
+    //}    
     return false;
+}
+
+void Battle::MouseMove(const b2Vec2& p)
+{
+    phys_controller_.MouseMove(p);	
 }
 
 void Battle::MouseUp(const b2Vec2& p)
 {
     phys_controller_.MouseUp(p);	
-    
-    if (mouse_point_)
-    {
-        phys_controller_.World()->DestroyBody(mouse_point_);
-        mouse_point_ = NULL;
-    }    
-    if (mouse_joint_)
-    {
-        phys_controller_.World()->DestroyJoint(mouse_joint_);
-        mouse_joint_ = NULL;
-    }    
-    
+       
+    //if (mouse_joint_)
+    //{
+    //    phys_controller_.World()->DestroyJoint(mouse_joint_);
+    //    mouse_joint_ = NULL;
+    //}  
+    //if (mouse_point_)
+    //{
+    //    phys_controller_.World()->DestroyBody(mouse_point_);
+    //    mouse_point_ = NULL;
+    //}  
 }
 
 void Battle::Reset()
@@ -160,8 +148,8 @@ void Battle::Reset()
 BPolygon Battle::GetBoundingRegion()
 {
     BPolygon polygon;
-    const b2Transform& xf = player_body_->GetTransform();
-    for (b2Fixture* fixture = player_body_->GetFixtureList(); 
+    const b2Transform& xf = player_.Body()->GetTransform();
+    for (b2Fixture* fixture = player_.Body()->GetFixtureList(); 
         fixture; 
         fixture = fixture->GetNext())
 	{
@@ -212,18 +200,11 @@ void Battle::DoSlice(const Trail& trail)
 {
     short combo = 0;
 
-    if (player_.CanPerformAttack())
-    {
-        // 1. For all enemies within the range
-        // 1.1. Check whether the trail collides with the enemy. Takes damage if exists
-        // 2. Update maximum combo
-        // 3. Notify system to play audio
-    }
+}
 
-    if (combo > stat_.MaximumCombos)
-    {
-        stat_.MaximumCombos = combo;
-    }
+void Battle::Update(const float& dt)
+{
+    phys_controller_.Step(&phys_settings_, dt);
 }
     
 } // namespace

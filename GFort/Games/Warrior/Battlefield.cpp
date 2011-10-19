@@ -29,19 +29,24 @@ namespace Warrior
 
 const float32 kWorldWidth       = 960;
 const float32 kWorldHeight      = 320;
-const float32 kLandscape        = 100.0f;
+const float32 kLandscape        = 60.0f;
 const float32 kGravity          = -10.0f;    
 
 Battlefield::Battlefield() 
-    : Width(kWorldWidth),
-      Height(kWorldHeight),
-      Landscape(100),
-      Gravity(kGravity)
+    : width_(kWorldWidth),
+      height_(kWorldHeight),
+      landscape_(kLandscape),
+      gravity_(kGravity)
 {
 }
 
 Battlefield::~Battlefield()
 {
+}
+
+void Battlefield::Initialize()
+{       
+
 }
       
 } // namespace

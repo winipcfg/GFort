@@ -26,6 +26,7 @@
 #include <GFort/Core/Physics/PhysicsController.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Games/Warrior/Struct.h>
+#include "Battlefield.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Trail.h"
@@ -34,6 +35,7 @@
 namespace Warrior 
 {
 
+/// The controller class that handles battle.
 class Battle
 {
 public:	
@@ -51,27 +53,47 @@ public:
     void MouseUp(const b2Vec2& p);
         
     /// Reset the battle.
-    void Reset();	
+    void Reset();
+
+    /// Gets the physics world.
+    b2World* World()            { return phys_controller_.World(); }
+
+    /// Gets the physics settings.
+    GFort::Core::Physics::Box2dSettings& PhysicsSettings() { return phys_settings_; }
+
+    /// Gets the map.
+    Battlefield& Map()          { return map_; }
+
+    /// Gets the player.
+    Player& GetPlayer()         { return player_; }
+
+    /// Gets the statistic of battle.
+    GameStat& Stat()            { return stat_; }
 
     /// Gets the bounding region.
     BPolygon GetBoundingRegion();
 
     /// Perform slice.
     void DoSlice(const Trail& trail);
+
+    /// Update the battle.
+    void Update(const float& dt);
+
+public:
+    /// Spawn player at specified location.
+    /// @param position
+    void SpawnPlayer(const b2Vec2& position);
         
 protected:
-public:
     GFort::Core::Physics::PhysicsController     phys_controller_;
     GFort::Core::Physics::Box2dSettings         phys_settings_;
 
-    b2Vec2                                      mouse_world_;
-    b2Body*                                     ground_body_;
-    b2Body*                                     player_body_;
-        
+    b2Vec2                                      mouse_world_;        
     b2Body*                                     mouse_point_;
     b2MouseJoint*                               mouse_joint_;
-            
+
     // Stores the player and enemies.
+    Battlefield                                 map_;
     Player                                      player_;
     std::vector<Enemy>                          enemies_;
 

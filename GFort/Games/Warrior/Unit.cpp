@@ -29,7 +29,8 @@ Unit::Unit()
       run_speed_(0),
       lives_(0),
       facing_(kFacingRight),
-      floating_in_the_air_(false)
+      floating_in_the_air_(false),
+      motion_updated_by_phys_(false)
 {
 }
 
@@ -50,26 +51,31 @@ void Unit::Reset()
     floating_in_the_air_ = false;
 }
 
+void Unit::Update(const float& dt)
+{
+    // Pop pending action if it is idle and there are pending actions
+    if (this->action_.ActionType == kUnitActionTypeIdle &&
+        !this->pending_actions_.empty())
+    {   
+        this->action_ = this->pending_actions_.front();
+        this->pending_actions_.pop_front();   
+        this->Notify();
+    }
+}
+
 void Unit::IssueCommand(const UnitAction& action, const bool& replace)
 {
     if (replace)
     {
         if (this->action_.Interruptible)
         {
-            //CCLOG("Replace current action");
             this->action_ = action;
             this->pending_actions_.clear();
-            //UpdateAction();
-            //UpdateActionLabel();
-        }
-        else
-        {
-            //CCLOG("Cannot replace current action as it cannot be interrupted");
+            this->Notify();
         }
     }
     else
     {
-        //CCLOG("Push a new pending action");
         this->pending_actions_.push_back(action); 
     }
 }

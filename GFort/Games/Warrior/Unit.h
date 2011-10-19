@@ -22,6 +22,7 @@
 #define WARRIOR_UNIT_H_
 
 #include <vector>
+#include <GFort/Core/IObserver.h>
 #include <GFort/Core/Game/IEntity.h>
 #include <GFort/Games/Warrior/UnitAction.h>
 #include <GFort/Core/Physics/PhysicsController.h>
@@ -32,7 +33,7 @@ namespace Warrior
 {
     
 /// Class of basic unit
-class Unit : public GFort::Core::Game::IEntity
+class Unit : public GFort::Core::Game::IEntity, public GFort::Core::ISubject<Unit>
 {
 public:
     /// Constructor.
@@ -55,7 +56,10 @@ public:
     virtual void Die()                                      { lives_ = 0; }
 
     /// Reset all parameters.
-    virtual void Reset();    
+    virtual void Reset();  
+
+    /// Update the unit.
+    void Update(const float& dt);
 
     //---------------------------------------------------------------
     // Physics
@@ -137,6 +141,7 @@ protected:
     // Instances
     short                       lives_;
     FacingDirection             facing_;
+    bool                        motion_updated_by_phys_;
 
 public:
     UnitAction                  action_;

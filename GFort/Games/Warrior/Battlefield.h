@@ -22,7 +22,6 @@
 #define WARRIOR_BATTLEFIELD_H_
 
 #include <vector>
-#include <deque>
 #include <GFort/Core/Physics/PhysicsController.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Games/Warrior/Struct.h>
@@ -37,6 +36,8 @@ namespace Warrior
 /// Map of battle. All attributes are in public to make sure it is fast access.
 class Battlefield
 {
+public :
+    typedef std::vector<b2Body* > BodyRefList;
 public:
     /// Constructor.
     Battlefield();
@@ -44,14 +45,49 @@ public:
     /// Destructor.
     ~Battlefield();
 
-private:
-    GFort::Core::Physics::PhysicsController     phys_controller_;
-    GFort::Core::Physics::Box2dSettings         phys_settings_;
+    /// Initialize a map.
+    void Initialize();
 
-    float   Width;
-    float   Height;
-    float   Landscape;
-    float   Gravity;
+    /// Gets the contents of the map.
+    BodyRefList& Contents()                 { return contents_; }
+
+    /// Sets the width of the map.
+    /// @param value
+    void SetWidth(const float& value)       { width_ = value; }
+
+    /// Sets the height of the map.
+    /// @param value
+    void SetHeight(const float& value)      { height_ = value; }
+
+    /// Sets the landscape of the map.
+    /// @param value
+    void SetLandscape(const float& value)   { landscape_ = value; }
+
+    /// Sets the gravity of the map.
+    /// @param value
+    void SetGravity(const float& value)     { gravity_ = value; }
+    
+
+    /// Gets the width of the map.
+    float Width() const                     { return width_; }
+
+    /// Gets the height of the map.
+    float Height() const                    { return height_; }
+
+    /// Gets the landscape of the map.
+    float Landscape() const                 { return landscape_; }
+
+    /// Gets the gravity of the map.
+    float Gravity() const                   { return gravity_; }
+    
+private:
+    // Stores the reference of contents
+    BodyRefList         contents_;
+
+    float               width_;
+    float               height_;
+    float               landscape_;
+    float               gravity_;
 };
 
 }
