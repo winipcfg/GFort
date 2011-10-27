@@ -53,7 +53,7 @@ public:
     virtual const bool TakeDamage(const short& damage);
 
     /// Kill the unit.
-    virtual void Die()                                      { lives_ = 0; }
+    virtual void Die();
 
     /// Reset all parameters.
     virtual void Reset();  
@@ -70,6 +70,9 @@ public:
     /// Assign physics body to the unit.
     /// @param body
     void SetBody(b2Body* body)                              { body_ = body; }
+
+    /// Gets the bounding region.
+    BPolygon GetBoundingRegion() const;
     
     //---------------------------------------------------------------
     // Actions

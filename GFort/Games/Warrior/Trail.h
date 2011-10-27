@@ -73,12 +73,12 @@ public:
 
     /// Returns true if it is inside specified region.
     /// @param region
-    bool Within(const BPolygon& region);
+    bool Within(const BPolygon& region) const;
 
     /// Returns true if it collides with region.
     /// @param region
     /// @param[out] turns intersection points
-    bool Collide(const BPolygon& region, std::vector<BTurnInfo>& turns);
+    bool Collide(const BPolygon& region, std::vector<BTurnInfo>& turns) const;
     
     /// Sets maximum number of nodes allowed. -1 means no limit
     /// @param value

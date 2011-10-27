@@ -36,7 +36,7 @@ namespace Warrior
 {
 
 /// The controller class that handles battle.
-class Battle
+class Battle : public GFort::Core::ISubject<Battle>
 {
 public:	
     /// Constructor
@@ -69,12 +69,11 @@ public:
 
     /// Gets the statistic of battle.
     GameStat& Stat()            { return stat_; }
-
-    /// Gets the bounding region.
-    BPolygon GetBoundingRegion();
-
-    /// Perform slice.
-    void DoSlice(const Trail& trail);
+    
+    /// Perform slice by specified trail.
+    /// @param trail
+    /// @param[out] affectedUnits
+    void DoSlice(const Trail& trail, std::vector<Unit>& affectedUnits);
 
     /// Update the battle.
     void Update(const float& dt);
@@ -83,15 +82,16 @@ public:
     /// Spawn player at specified location.
     /// @param position
     void SpawnPlayer(const b2Vec2& position);
+
+    ///// Resolve attack.
+    ///// @param attacker
+    ///// @param target
+    //void ResolveAttack(Unit& attacker, Unit& target);
         
 protected:
     GFort::Core::Physics::PhysicsController     phys_controller_;
     GFort::Core::Physics::Box2dSettings         phys_settings_;
-
-    b2Vec2                                      mouse_world_;        
-    b2Body*                                     mouse_point_;
-    b2MouseJoint*                               mouse_joint_;
-
+    
     // Stores the player and enemies.
     Battlefield                                 map_;
     Player                                      player_;

@@ -19,6 +19,7 @@
 //THE SOFTWARE.
 
 #include "Unit.h"
+#include "BattleHelper.h"
 
 namespace Warrior 
 {  
@@ -37,7 +38,21 @@ Unit::Unit()
 const bool Unit::TakeDamage(const short& damage)
 {
     lives_ -= damage;
-    return (lives_ > 0);
+    if (!Alive())
+    {
+        this->action_.Reset();
+        this->pending_actions_.clear();
+        this->Notify();
+    }
+    return Alive();
+}
+
+void Unit::Die()                                      
+{ 
+    lives_ = 0; 
+    this->action_.Reset();
+    this->pending_actions_.clear();
+    this->Notify();
 }
 
 void Unit::Reset()
@@ -49,6 +64,8 @@ void Unit::Reset()
     action_.Reset();
     facing_ = kFacingRight;
     floating_in_the_air_ = false;
+    this->action_.Reset();
+    this->pending_actions_.clear();
 }
 
 void Unit::Update(const float& dt)
@@ -61,6 +78,14 @@ void Unit::Update(const float& dt)
         this->pending_actions_.pop_front();   
         this->Notify();
     }
+}
+
+BPolygon Unit::GetBoundingRegion() const
+{
+    if (body_)
+        return BattleHelper::GetPolygon(*body_);
+    else
+        return BPolygon();
 }
 
 void Unit::IssueCommand(const UnitAction& action, const bool& replace)

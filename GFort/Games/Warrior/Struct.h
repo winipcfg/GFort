@@ -67,6 +67,12 @@ enum UnitActionType
 
     /// The unit is charging for defense.
     kUnitActionTypeDefense, 
+
+    /// The unit do move to left.
+    kUnitActionTypeMoveLeft,
+
+    /// The unit do move to right.
+    kUnitActionTypeMoveRight,
 };
 
 enum UnitBehaviorType

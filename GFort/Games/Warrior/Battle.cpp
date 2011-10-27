@@ -37,8 +37,6 @@ const int kPlayerRunSpeed           = 5;
 const short kMapBoundary            = 20;
     
 Battle::Battle()
-    : mouse_point_(NULL),
-      mouse_joint_(NULL)
 {		
     phys_controller_.SetDefaultGravity(); 	
     phys_controller_.World()->SetContinuousPhysics(true);                    
@@ -92,30 +90,7 @@ void Battle::Initialize()
     
 bool Battle::MouseDown(const b2Vec2& p)
 {
-    phys_controller_.MouseDown(p);
-        
-    //if (mouse_point_ == NULL)
-    //{
-    //    mouse_point_ = GFort::Core::Physics::PhysicsHelper::CreateCircle(
-    //        phys_controller_.World(),
-    //        b2_staticBody,
-    //        p,
-    //        10);
-    //}    
-    //
-    //mouse_world_ = b2Vec2(p.x/PTM_RATIO, p.y/PTM_RATIO);
-    //b2MouseJointDef md;
-    //{   
-    //    md.bodyA = mouse_point_;
-    //    md.bodyB = player_.Body();
-    //    md.target = mouse_world_;
-    //    
-    //    //md.maxForce = (player_.Body()->GetMass() < 16.0)? (1000.0f * player_.Body()->GetMass()) : float32(16000.0);        
-    //    md.maxForce = 1000.0f * 16;
-    //    
-    //    mouse_joint_ = (b2MouseJoint*) phys_controller_.World()->CreateJoint(&md);
-    //    player_.Body()->SetAwake(true);
-    //}    
+    phys_controller_.MouseDown(p);        
     return false;
 }
 
@@ -127,17 +102,6 @@ void Battle::MouseMove(const b2Vec2& p)
 void Battle::MouseUp(const b2Vec2& p)
 {
     phys_controller_.MouseUp(p);	
-       
-    //if (mouse_joint_)
-    //{
-    //    phys_controller_.World()->DestroyJoint(mouse_joint_);
-    //    mouse_joint_ = NULL;
-    //}  
-    //if (mouse_point_)
-    //{
-    //    phys_controller_.World()->DestroyBody(mouse_point_);
-    //    mouse_point_ = NULL;
-    //}  
 }
 
 void Battle::Reset()
@@ -145,66 +109,56 @@ void Battle::Reset()
     Initialize();
 }
 
-BPolygon Battle::GetBoundingRegion()
-{
-    BPolygon polygon;
-    const b2Transform& xf = player_.Body()->GetTransform();
-    for (b2Fixture* fixture = player_.Body()->GetFixtureList(); 
-        fixture; 
-        fixture = fixture->GetNext())
-	{
-		switch (fixture->GetType())
-	    {
-	    case b2Shape::e_circle:
-		    {
-			    b2CircleShape* circle = (b2CircleShape*)fixture->GetShape();
+void Battle::DoSlice(const Trail& trail, std::vector<Unit>& affectedUnits)
+{    
+    std::set<Enemy* > damaged_enemies; 
+    Enemy* enemy;
+    std::vector<BTurnInfo> turns;
+    for (unsigned int j = 0; j < enemies_.size(); ++j)
+    {
+        enemy = &enemies_[j];
+        if (enemy->Alive())
+        {         
+            turns.clear();
+            if (trail.Collide(enemy->GetBoundingRegion(), turns))
+            {
+                damaged_enemies.insert(enemy);
+            }
+        }
+    }
 
-			    b2Vec2 center = b2Mul(xf, circle->m_p);
-			    float32 radius = circle->m_radius;
-			    b2Vec2 axis = xf.R.col1;
+    if (damaged_enemies.size() > 0)
+    {
+        std::set<Enemy* >::iterator it;
+        for (it = damaged_enemies.begin(); it != damaged_enemies.end(); ++it)
+        {
+            (*it)->Die();
+        }
 
-			    //m_debugDraw->DrawSolidCircle(center, radius, axis, color);
-		    }
-		    break;
+        stat_.TotalKills += damaged_enemies.size();
 
-	    case b2Shape::e_polygon:
-		    {
-			    b2PolygonShape* poly = (b2PolygonShape*)fixture->GetShape();
-			    int32 vertexCount = poly->m_vertexCount;
-			    b2Assert(vertexCount <= b2_maxPolygonVertices);
-			    b2Vec2 vertices[b2_maxPolygonVertices];
-                                
-                // Clockwise
-                BPoint pt;
-                for (int32 i = vertexCount - 1; i >= 0; --i)
-			    {
-                    vertices[i] = PTM_RATIO * b2Mul(xf, poly->m_vertices[i]);
-                    pt.set<0>(vertices[i].x);
-                    pt.set<1>(vertices[i].y);
-                    boost::geometry::append(polygon, pt);
-                }
-                if (vertexCount > 1)
-                {
-                    pt.set<0>(vertices[vertexCount - 1].x);
-                    pt.set<1>(vertices[vertexCount - 1].y);
-                    boost::geometry::append(polygon, pt);
-                }
-		    }
-		    break;
-	    }
-	}
-    return polygon;
-}
+        //audio_handler_.PlayKillEffect();
+    }
 
-void Battle::DoSlice(const Trail& trail)
-{
-    short combo = 0;
-
+    turns.clear();
+    BPolygon poly = player_.GetBoundingRegion();
+    if (trail.Within(poly) || trail.Collide(poly, turns))
+    {
+        b2Vec2 impulse = b2Vec2(600.0f, 1200.0f);
+        b2Vec2 center = player_.Body()->GetWorldCenter();
+        player_.Body()->ApplyForce(impulse, player_.Body()->GetWorldCenter());
+        player_.Body()->ApplyTorque(400);
+    }     
 }
 
 void Battle::Update(const float& dt)
 {
     phys_controller_.Step(&phys_settings_, dt);
 }
+
+//void ResolveAttack(Unit& attacker, Unit& target)
+//{
+//    target.TakeDamage(1);
+//}
     
 } // namespace

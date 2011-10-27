@@ -136,9 +136,9 @@ const float Trail::Displacement() const
         return boost::geometry::distance(point_list_.front(), point_list_.back());
 }
 
-bool Trail::Within(const BPolygon& region)
+bool Trail::Within(const BPolygon& region) const
 {
-    for (std::list<BPoint >::iterator it = point_list_.begin(); 
+    for (std::list<BPoint >::const_iterator it = point_list_.cbegin(); 
         it != point_list_.end(); 
         ++it)
     {
@@ -148,12 +148,12 @@ bool Trail::Within(const BPolygon& region)
     return true;
 }
 
-bool Trail::Collide(const BPolygon& region, std::vector<BTurnInfo>& turns)
+bool Trail::Collide(const BPolygon& region, std::vector<BTurnInfo>& turns) const
 {    
     BLine line;
     boost::geometry::detail::get_turns::no_interrupt_policy policy;
     
-    for (std::list<BPoint >::iterator it = point_list_.begin(); 
+    for (std::list<BPoint >::const_iterator it = point_list_.begin(); 
         it != point_list_.end(); 
         ++it)
     {
