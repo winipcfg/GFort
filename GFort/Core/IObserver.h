@@ -99,7 +99,8 @@ inline void ISubject<T>::Detach(IObserver<T>* observer)
 template <typename T>
 inline void ISubject<T>::Notify()
 {
-    std::list<IObserver<T>* >::iterator it;
+    typedef typename std::list<IObserver<T>* >::iterator iterator_type;
+    iterator_type it;
     for (it = observer_list_.begin(); it != observer_list_.end(); ++it)
     {
         (*it)->Update(static_cast<T*>(this));
