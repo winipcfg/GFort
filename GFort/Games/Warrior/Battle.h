@@ -56,19 +56,19 @@ public:
     void Reset();
 
     /// Gets the physics world.
-    b2World* World()            { return phys_controller_.World(); }
+    b2World* World()                                        { return phys_controller_.World(); }
 
     /// Gets the physics settings.
-    GFort::Core::Physics::Box2dSettings& PhysicsSettings() { return phys_settings_; }
+    GFort::Core::Physics::Box2dSettings& PhysicsSettings()  { return phys_settings_; }
 
     /// Gets the map.
-    Battlefield& Map()          { return map_; }
+    Battlefield& Map()                                      { return map_; }
 
     /// Gets the player.
-    Player& GetPlayer()         { return player_; }
+    Player& GetPlayer()                                     { return player_; }
 
     /// Gets the statistic of battle.
-    GameStat& Stat()            { return stat_; }
+    GameStat& Stat()                                        { return stat_; }
     
     /// Perform slice by specified trail.
     /// @param trail
@@ -83,10 +83,14 @@ public:
     /// @param position
     void SpawnPlayer(const b2Vec2& position);
 
-    ///// Resolve attack.
-    ///// @param attacker
-    ///// @param target
-    //void ResolveAttack(Unit& attacker, Unit& target);
+    /// Spawn enemy at specified location.
+    /// @param position
+    Enemy* SpawnEnemy(const b2Vec2& position);
+
+    /// Resolve attack.
+    /// @param attacker
+    /// @param target
+    void ResolveAttack(Unit& attacker, Unit& target);
         
 protected:
     GFort::Core::Physics::PhysicsController     phys_controller_;
@@ -95,7 +99,7 @@ protected:
     // Stores the player and enemies.
     Battlefield                                 map_;
     Player                                      player_;
-    std::vector<Enemy>                          enemies_;
+    std::vector<Enemy* >                        enemies_;
 
     GameStat                                    stat_;
 };

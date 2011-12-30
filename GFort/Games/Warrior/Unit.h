@@ -49,8 +49,9 @@ public:
     virtual const bool IsUnderControl() const               { return true; }
 
     /// Takes damage. Returns true if it is still alive.
+    /// @param attacker The unit that attack the unit. NULL if there is no attacker
     /// @param damage
-    virtual const bool TakeDamage(const short& damage);
+    virtual const bool TakeDamage(Unit* attacker, const short& damage);
 
     /// Kill the unit.
     virtual void Die();
@@ -93,6 +94,9 @@ public:
     /// Gets maximum health point of the unit.
     const short MaxLives() const                            { return max_lives_; }
 
+    /// Gets maximum stamina of the unit.
+    const short MaxStamina() const                          { return max_stamina_; }
+
     /// Gets the walk speed of the unit.
     const float WalkSpeed() const                           { return walk_speed_; }
 
@@ -101,6 +105,9 @@ public:
 
     /// Gets the health point of the unit.
     const short Lives() const                               { return lives_; }
+
+    /// Gets the stamina of the unit.
+    const short Stamina() const                             { return stamina_; }
 
     /// Gets facing direction.
     const FacingDirection& Facing()                         { return facing_; }
@@ -124,6 +131,10 @@ public:
     /// @param value
     virtual void SetLives(const short& value)               { lives_ = value; }
 
+    /// Sets the stamina of the unit.
+    /// @param value
+    virtual void SetStamina(const short& value)             { stamina_ = value; }
+
     /// Sets facing dircection of the unit.
     /// @param value
     virtual void SetFacing(const FacingDirection& value)    { facing_ = value; }
@@ -138,13 +149,17 @@ protected:
 
     // Attributes
     short                       max_lives_;
+    short                       max_stamina_;
+    short                       stamina_regenerate_speed_;
     float                       walk_speed_;
     float                       run_speed_;
 
     // Instances
     short                       lives_;
+    short                       stamina_;
     FacingDirection             facing_;
     bool                        motion_updated_by_phys_;
+    Unit*                       last_attacker_;
 
 public:
     UnitAction                  action_;

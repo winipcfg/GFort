@@ -138,7 +138,7 @@ const float Trail::Displacement() const
 
 bool Trail::Within(const BPolygon& region) const
 {
-    for (std::list<BPoint >::const_iterator it = point_list_.cbegin(); 
+    for (std::list<BPoint >::const_iterator it = point_list_.begin(); 
         it != point_list_.end(); 
         ++it)
     {

@@ -26,17 +26,23 @@ namespace Warrior
     
 Unit::Unit()
     : max_lives_(0),
+      max_stamina_(0),
+      stamina_regenerate_speed_(0),
       walk_speed_(0),
       run_speed_(0),
       lives_(0),
+      stamina_(0),
       facing_(kFacingRight),
       floating_in_the_air_(false),
-      motion_updated_by_phys_(false)
+      last_attacker_(NULL),
+      motion_updated_by_phys_(false),
+      body_(NULL)
 {
 }
 
-const bool Unit::TakeDamage(const short& damage)
+const bool Unit::TakeDamage(Unit* attacker, const short& damage)
 {
+    last_attacker_ = attacker;
     lives_ -= damage;
     if (!Alive())
     {
@@ -50,6 +56,7 @@ const bool Unit::TakeDamage(const short& damage)
 void Unit::Die()                                      
 { 
     lives_ = 0; 
+    stamina_ = 0;
     this->action_.Reset();
     this->pending_actions_.clear();
     this->Notify();

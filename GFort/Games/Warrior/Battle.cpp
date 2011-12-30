@@ -47,45 +47,51 @@ Battle::Battle()
 
 Battle::~Battle()
 {
+	for (unsigned int i = 0; i < enemies_.size(); ++i)
+	{
+		delete enemies_[i];
+		enemies_[i] = NULL;
+	}
+	enemies_.clear();
 }
 
 void Battle::Initialize()
 {   
-    b2Body* body;
+ //   b2Body* body;
 
-    // Create boundary
-    body = GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
-        phys_controller_.World(),
-        b2Vec2(kMapBoundary, kMapBoundary),
-        map_.Width() - kMapBoundary * 2,
-        map_.Height() - kMapBoundary * 2);
+ //   // Create boundary
+ //   body = GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
+ //       phys_controller_.World(),
+ //       b2Vec2(kMapBoundary, kMapBoundary),
+ //       map_.Width() - kMapBoundary * 2,
+ //       map_.Height() - kMapBoundary * 2);
 
-    // Ground
-    body = GFort::Core::Physics::PhysicsHelper::CreateBox(
-        phys_controller_.World(),
-        b2_staticBody,
-        b2Vec2(map_.Width() / 2, map_.Landscape() / 2),
-        map_.Width(),
-        map_.Landscape());
-    map_.Contents().push_back(body);
+ //   // Ground
+ //   body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+ //       phys_controller_.World(),
+ //       b2_staticBody,
+ //       b2Vec2(map_.Width() / 2, map_.Landscape() / 2),
+ //       map_.Width(),
+ //       map_.Landscape());
+ //   map_.Contents().push_back(body);
 
-    // Create Player
-    body = GFort::Core::Physics::PhysicsHelper::CreateBox(
-        phys_controller_.World(),
-        kPlayerStartPosition,
-        kPlayerWidth,
-        kPlayerHeight);
+ //   // Create Player
+ //   body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+ //       phys_controller_.World(),
+ //       kPlayerStartPosition,
+ //       kPlayerWidth,
+ //       kPlayerHeight);
 
-    body->SetFixedRotation(false);
-    
-    // Set the dynamic body fixture.
-	b2Fixture* fixture = body->GetFixtureList();	
-	fixture[0].SetDensity(1.0f);
-	fixture[0].SetFriction(0.3f);
-	fixture[0].SetRestitution(0.4f);	
-	body->ResetMassData();
+ //   body->SetFixedRotation(false);
+ //   
+ //   // Set the dynamic body fixture.
+	//b2Fixture* fixture = body->GetFixtureList();	
+	//fixture[0].SetDensity(1.0f);
+	//fixture[0].SetFriction(0.3f);
+	//fixture[0].SetRestitution(0.4f);	
+	//body->ResetMassData();
 
-    player_.SetBody(body);    
+ //   player_.SetBody(body);    
 }
     
 bool Battle::MouseDown(const b2Vec2& p)
@@ -116,7 +122,7 @@ void Battle::DoSlice(const Trail& trail, std::vector<Unit>& affectedUnits)
     std::vector<BTurnInfo> turns;
     for (unsigned int j = 0; j < enemies_.size(); ++j)
     {
-        enemy = &enemies_[j];
+        enemy = enemies_[j];
         if (enemy->Alive())
         {         
             turns.clear();
@@ -156,9 +162,16 @@ void Battle::Update(const float& dt)
     phys_controller_.Step(&phys_settings_, dt);
 }
 
-//void ResolveAttack(Unit& attacker, Unit& target)
-//{
-//    target.TakeDamage(1);
-//}
+void Battle::ResolveAttack(Unit& attacker, Unit& target)
+{
+    target.TakeDamage(&attacker, 1);
+}
+
+Enemy* Battle::SpawnEnemy(const b2Vec2& position)
+{
+    Enemy* enemy = new Enemy();
+    enemies_.push_back(enemy);
+    return enemy;
+}
     
 } // namespace

@@ -27,11 +27,11 @@
 namespace Warrior 
 {
     
-const short kDefaultLives       = 5;
+const short kDefaultLives       = 10;
 const short kMaxLives           = 10;
 
 /// Stores player information
-class Player : public Unit 
+class Player : public Unit, public GFort::Core::ISubject<Player> 
 {
 public:
     /// Constructor.
@@ -65,7 +65,7 @@ inline Player::~Player()
 
 inline void Player::Reset()
 {
-    lives_ = kDefaultLives;
+    lives_ = max_lives_ = kDefaultLives;
 }
 
 inline const bool Player::CanPerformAttack() const
