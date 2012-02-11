@@ -21,7 +21,9 @@
 #ifndef GFORT_CORE_PHYSICS_PHYSICS_HELPER_H_
 #define GFORT_CORE_PHYSICS_PHYSICS_HELPER_H_
 
+#include <vector>
 #include <Box2D/Box2D.h>
+#include <GFort/Core/Physics/Box2dSettings.h>
 
 namespace GFort { namespace Core { namespace Physics
 {
@@ -67,8 +69,49 @@ public:
 	/// Create bounded area
 	static b2Body* CreateBoundedArea(b2World* world, const float32& width, const float32& height);
 	static b2Body* CreateBoundedArea(b2World* world, const b2Vec2& position, const float32& width, const float32& height);
-};
 
+    /// Projectile
+
+    /// Get the position of projectile, assuming there is no other obstacles and forces.
+    /// @param world
+    /// @param settings
+    /// @param startingPosition
+    /// @param startingVelocity
+    /// @param steps
+    static b2Vec2 GetTrajectoryPoint(b2World* world, Box2dSettings* settings, const b2Vec2& startingPosition, const b2Vec2& startingVelocity, const float& steps);
+
+    static std::vector<b2Vec2> GetTrajectory(
+        b2World* world, 
+        Box2dSettings* settings, 
+        b2Body* body, 
+        const b2Vec2& startingPosition, 
+        const b2Vec2& startingVelocity, 
+        const float& maxSteps);
+
+    static float GetTrajectoryMaxHeight(b2World* world, Box2dSettings* settings, const b2Vec2& startingPosition, const b2Vec2& startingVelocity);
+
+    /// Get the projectile velocity.
+    /// @param world
+    /// @param settings
+    /// @param startingPosition
+    /// @param targetPosition
+    /// @param duration Fixed duration
+    static b2Vec2 GetTrajectoryVelocity(
+        b2World* world, 
+        Box2dSettings* settings, 
+        const b2Vec2& startingPosition, 
+        const b2Vec2& targetPosition, 
+        const float32& duration);
+
+    /// Get appropriate velocity
+    //static b2Vec2 GetTrajectoryVelocity(
+    //    b2World* world, 
+    //    Box2dSettings* settings, 
+    //    const b2Vec2& startingPosition, 
+    //    const b2Vec2& targetPosition, 
+    //    const float32& horizontalSpeed);
+
+};
 
 } } } // namespace
 

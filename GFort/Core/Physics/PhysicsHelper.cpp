@@ -20,6 +20,8 @@
 
 #include "PhysicsHelper.h"
 
+#include <GFort/Core/MathHelper.h>
+
 namespace GFort { namespace Core { namespace Physics
 {
 
@@ -295,26 +297,181 @@ b2Body* PhysicsHelper::CreateBoundedArea(
 	// The body is also added to the world.
 	b2Body* groundBody = world->CreateBody(&groundBodyDef);
 	
-	// Define the ground box shape.
-	b2PolygonShape groundBox;					
-	
-	// bottom
-	groundBox.SetAsEdge(b2Vec2(0,0), b2Vec2(width_t,0));
-	groundBody->CreateFixture(&groundBox,0);
-	
-	// top
-	groundBox.SetAsEdge(b2Vec2(0,height_t), b2Vec2(width_t,height_t));
-	groundBody->CreateFixture(&groundBox,0);
-	
-	// left
-	groundBox.SetAsEdge(b2Vec2(0,height_t), b2Vec2(0,0));
-	groundBody->CreateFixture(&groundBox,0);
-	
-	// right
-	groundBox.SetAsEdge(b2Vec2(width_t,height_t), b2Vec2(width_t,0));
-	groundBody->CreateFixture(&groundBox,0);	
+	// Define the ground box shape
+    b2EdgeShape borderShape;
+
+    // Create fixtures for the four borders (the border shape is re-used)
+    borderShape.Set(b2Vec2(0,0), b2Vec2(width_t,0));
+    groundBody->CreateFixture(&borderShape, 0);
+    borderShape.Set(b2Vec2(width_t,height_t), b2Vec2(width_t,0));
+    groundBody->CreateFixture(&borderShape, 0);
+    borderShape.Set(b2Vec2(0,height_t), b2Vec2(width_t,height_t));
+    groundBody->CreateFixture(&borderShape, 0);
+    borderShape.Set(b2Vec2(0,height_t), b2Vec2(0,0));
+    groundBody->CreateFixture(&borderShape, 0);
 	
 	return groundBody;
 }
+
+b2Vec2 PhysicsHelper::GetTrajectoryPoint(
+    b2World* world,
+    Box2dSettings* settings,
+    const b2Vec2& startingPosition, 
+    const b2Vec2& startingVelocity, 
+    const float& steps)
+{
+    float t = 1.0f / settings->hz;
+    b2Vec2 stepVelocity = t * startingVelocity; // m/s
+    b2Vec2 stepGravity = t * t * world->GetGravity(); // m/s/s
+
+    return startingPosition + steps * stepVelocity + 0.5f * (steps * steps + steps) * stepGravity;
+}
+
+std::vector<b2Vec2> PhysicsHelper::GetTrajectory(
+    b2World* world, 
+    Box2dSettings* settings, 
+    b2Body* body,
+    const b2Vec2& startingPosition, 
+    const b2Vec2& startingVelocity, 
+    const float& maxSteps)
+{
+    // This callback finds the closest hit, optionally ignoring one particular body
+    class TrajectoryRayCastClosestCallback : public b2RayCastCallback
+    {
+    public:
+        TrajectoryRayCastClosestCallback(b2Body* ignoreBody) : m_hit(false), m_ignoreBody(ignoreBody) {}
+
+        float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+        {
+            if ( fixture->GetBody() == m_ignoreBody )
+                return -1;
+
+            m_hit = true;
+            m_point = point;
+            m_normal = normal;
+            return fraction;
+        }
+
+        b2Body* m_ignoreBody;
+        bool m_hit;
+        b2Vec2 m_point;
+        b2Vec2 m_normal;
+    };
+
+    std::vector<b2Vec2> result;
+    TrajectoryRayCastClosestCallback raycastCallback(body);
+    b2Vec2 lastTP = startingPosition;
+
+    for (int i = 0; i < maxSteps; i++) 
+    {
+        b2Vec2 trajectoryPosition = GetTrajectoryPoint(world, settings, startingPosition, startingVelocity, i);
+
+        //avoid degenerate raycast where start and end point are the same
+        if ( i > 0 ) 
+        { 
+            world->RayCast(&raycastCallback, lastTP, trajectoryPosition);
+            if (raycastCallback.m_hit) 
+            {
+                result.push_back(raycastCallback.m_point);
+                break;
+            }
+        }
+        result.push_back(trajectoryPosition);
+        lastTP = trajectoryPosition;
+    }
+    return result;
+}
+
+float PhysicsHelper::GetTrajectoryMaxHeight(
+    b2World* world, 
+    Box2dSettings* settings, 
+    const b2Vec2& startingPosition, 
+    const b2Vec2& startingVelocity)
+{
+    //if the projectile is already heading down, this is as high as it will get
+    if ( startingVelocity.y < 0 )
+        return startingPosition.y;
+
+    //velocity and gravity are given per second but we want time step values here
+    float t = 1.0f / settings->hz;
+    b2Vec2 stepVelocity = t * startingVelocity; // m/s
+    b2Vec2 stepGravity = t * t * world->GetGravity(); // m/s/s
+
+    //find n when velocity is zero
+    float n = -stepVelocity.y / stepGravity.y - 1;
+
+    //plug n into position formula, using only vertical components
+    return startingPosition.y + n * stepVelocity.y + 0.5f * (n * n + n) * stepGravity.y;
+}
+
+b2Vec2 PhysicsHelper::GetTrajectoryVelocity(
+        b2World* world, 
+        Box2dSettings* settings, 
+        const b2Vec2& startingPosition, 
+        const b2Vec2& targetPosition, 
+        const float32& duration)
+{
+    if (startingPosition == targetPosition ||
+        duration < 0)
+    {
+        return b2Vec2(0, 0);
+    }
+    else
+    {
+        b2Vec2 actualSource = kINV_PTM_RATIO * startingPosition;
+        b2Vec2 actualTarget = kINV_PTM_RATIO * targetPosition;
+
+        b2Vec2 diff = actualTarget - actualSource;
+
+        //yt = y0 + v0 * t + 1/2 * a * t * t
+        //v0 = (yt - y0 - 1/2att)/t
+        //v0 = diffY / t  - 1/2at
+        return (1.0f / duration * diff) - (0.5f * duration * world->GetGravity());
+    }
+}
+
+//b2Vec2 PhysicsHelper::GetTrajectoryVelocity(
+//        b2World* world, 
+//        Box2dSettings* settings, 
+//        const b2Vec2& startingPosition, 
+//        const b2Vec2& targetPosition, 
+//        const float32& horizontalSpeed)
+//{
+//    if (horizontalSpeed == 0 ||
+//        startingPosition == targetPosition)
+//    {
+//        return b2Vec2(0, 0);
+//    }
+//    else
+//    {
+//        b2Vec2 actualSource = kINV_PTM_RATIO * startingPosition;
+//        b2Vec2 actualTarget = kINV_PTM_RATIO * targetPosition;
+//
+//        b2Vec2 diff = actualTarget - actualSource;
+//        short sign = GFort::Core::MathHelper::Sign(diff.x);
+//        float32 actualHorizontalSpeed = abs(horizontalSpeed) * sign;
+//
+//        if (world->GetGravity().x > -b2_epsilon && world->GetGravity().x < b2_epsilon)
+//        {
+//            // No horizontal gravity and horizontal speed is constant
+//            float t = abs(diff.x / actualHorizontalSpeed);
+//
+//            //yt = y0 + v0 * t + 1/2 * a * t * t
+//            //v0 = (yt - y0 - 1/2at)/t
+//            //v0 = diffY / t  - 1/2at
+//            float v0 = (diff.y / t) - (0.5f * world->GetGravity().y * t);
+//            return b2Vec2(actualHorizontalSpeed, v0);
+//        }        
+//        else
+//        {
+//            // http://www.ajdesigner.com/phpprojectilemotion/vertical_velocity_equation.php
+//            // t = (vx0 +- sqrt(vx0 ^ 2 - 2 * a * diffX)) / a
+//            float t = (actualHorizontalSpeed + sqrt(actualHorizontalSpeed * actualHorizontalSpeed - 2 * world->GetGravity().x * diff.x)) / world->GetGravity().x;
+//            float v0 = (diff.y / t) - (0.5f * world->GetGravity().y * t);
+//            return b2Vec2(actualHorizontalSpeed, v0);
+//        }
+//    }
+//}
+
 
 } } } // namespace

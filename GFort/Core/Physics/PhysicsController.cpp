@@ -33,7 +33,8 @@ PhysicsController::PhysicsController()
 	gravity.Set(0.0f, 0.0f);
 	bool doSleep = true;
 	
-	world_ = new b2World(gravity, doSleep);
+	world_ = new b2World(gravity);
+    world_->SetAllowSleeping(doSleep);
 	world_->SetContactListener(this);
 }
 

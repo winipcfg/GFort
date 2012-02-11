@@ -77,7 +77,7 @@ public:
     
     /// Sets debug draw.
     /// @param debugDraw
-	void SetDebugDraw(b2DebugDraw* debugDraw)   { if (world_ != NULL) world_->SetDebugDraw(debugDraw); }
+	void SetDebugDraw(b2Draw* debugDraw)        { if (world_ != NULL) world_->SetDebugDraw(debugDraw); }
 	
     /// Draws debug data.
     void DrawDebugData()                        { if (world_ != NULL) world_->DrawDebugData(); }
