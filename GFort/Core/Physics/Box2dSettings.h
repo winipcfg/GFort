@@ -85,11 +85,11 @@ private:
 inline void Box2dSettings::RefreshDebugFlag()
 {
     debug_flag_ = 0;
-    debug_flag_ += allowed_draw_shapes_			* b2DebugDraw::e_shapeBit;
-    debug_flag_ += allowed_draw_joints_			* b2DebugDraw::e_jointBit;
-    debug_flag_ += allowed_draw_AABBs_			* b2DebugDraw::e_aabbBit;
-    debug_flag_ += allowed_draw_pairs_			* b2DebugDraw::e_pairBit;
-    debug_flag_ += allowed_draw_COMs_			* b2DebugDraw::e_centerOfMassBit;
+    debug_flag_ += allowed_draw_shapes_			* b2Draw::e_shapeBit;
+    debug_flag_ += allowed_draw_joints_			* b2Draw::e_jointBit;
+    debug_flag_ += allowed_draw_AABBs_			* b2Draw::e_aabbBit;
+    debug_flag_ += allowed_draw_pairs_			* b2Draw::e_pairBit;
+    debug_flag_ += allowed_draw_COMs_			* b2Draw::e_centerOfMassBit;
 }
 
 } } } // namespace
