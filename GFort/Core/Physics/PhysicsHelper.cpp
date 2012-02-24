@@ -430,48 +430,5 @@ b2Vec2 PhysicsHelper::GetTrajectoryVelocity(
     }
 }
 
-//b2Vec2 PhysicsHelper::GetTrajectoryVelocity(
-//        b2World* world, 
-//        Box2dSettings* settings, 
-//        const b2Vec2& startingPosition, 
-//        const b2Vec2& targetPosition, 
-//        const float32& horizontalSpeed)
-//{
-//    if (horizontalSpeed == 0 ||
-//        startingPosition == targetPosition)
-//    {
-//        return b2Vec2(0, 0);
-//    }
-//    else
-//    {
-//        b2Vec2 actualSource = kINV_PTM_RATIO * startingPosition;
-//        b2Vec2 actualTarget = kINV_PTM_RATIO * targetPosition;
-//
-//        b2Vec2 diff = actualTarget - actualSource;
-//        short sign = GFort::Core::MathHelper::Sign(diff.x);
-//        float32 actualHorizontalSpeed = abs(horizontalSpeed) * sign;
-//
-//        if (world->GetGravity().x > -b2_epsilon && world->GetGravity().x < b2_epsilon)
-//        {
-//            // No horizontal gravity and horizontal speed is constant
-//            float t = abs(diff.x / actualHorizontalSpeed);
-//
-//            //yt = y0 + v0 * t + 1/2 * a * t * t
-//            //v0 = (yt - y0 - 1/2at)/t
-//            //v0 = diffY / t  - 1/2at
-//            float v0 = (diff.y / t) - (0.5f * world->GetGravity().y * t);
-//            return b2Vec2(actualHorizontalSpeed, v0);
-//        }        
-//        else
-//        {
-//            // http://www.ajdesigner.com/phpprojectilemotion/vertical_velocity_equation.php
-//            // t = (vx0 +- sqrt(vx0 ^ 2 - 2 * a * diffX)) / a
-//            float t = (actualHorizontalSpeed + sqrt(actualHorizontalSpeed * actualHorizontalSpeed - 2 * world->GetGravity().x * diff.x)) / world->GetGravity().x;
-//            float v0 = (diff.y / t) - (0.5f * world->GetGravity().y * t);
-//            return b2Vec2(actualHorizontalSpeed, v0);
-//        }
-//    }
-//}
-
 
 } } } // namespace

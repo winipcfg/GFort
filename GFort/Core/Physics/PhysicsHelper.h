@@ -101,16 +101,7 @@ public:
         Box2dSettings* settings, 
         const b2Vec2& startingPosition, 
         const b2Vec2& targetPosition, 
-        const float32& duration);
-
-    /// Get appropriate velocity
-    //static b2Vec2 GetTrajectoryVelocity(
-    //    b2World* world, 
-    //    Box2dSettings* settings, 
-    //    const b2Vec2& startingPosition, 
-    //    const b2Vec2& targetPosition, 
-    //    const float32& horizontalSpeed);
-
+        const float32& duration);    
 };
 
 } } } // namespace
