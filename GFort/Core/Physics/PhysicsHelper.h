@@ -51,10 +51,9 @@ public:
 	
 	/// Create circle
     static b2Body* CreateCircle(b2World* world, const b2BodyDef& bodyDef, const float32& radius);
-	static b2Body* CreateCircle(b2World* world, const b2Vec2& position, const float32& radius);
-	static b2Body* CreateCircle(b2World* world, const b2Vec2& position, const float32& radius, const float32& angle);
-	static b2Body* CreateCircle(b2World* world, const b2Vec2& start, const b2Vec2& end);
     static b2Body* CreateCircle(b2World* world, const b2BodyType& bodyType, const b2Vec2& position, const float32& radius);
+    static b2Body* CreateCircle(b2World* world, const b2BodyType& bodyType, const b2Vec2& position, const float32& radius, const float32& angle);
+	static b2Body* CreateCircle(b2World* world, const b2BodyType& bodyType, const b2Vec2& start, const b2Vec2& end);
 	
 	/// Create box    
 	static b2Body* CreateBox(b2World* world, const b2Vec2& start, const b2Vec2& end);

@@ -62,20 +62,25 @@ b2Body* PhysicsHelper::CreateCircle(
 
 b2Body* PhysicsHelper::CreateCircle(
     b2World* world, 
+    const b2BodyType& bodyType, 
     const b2Vec2& position, 
     const float32& radius)
 {
-	return CreateCircle(world, position, radius, 0);
+    b2BodyDef bodyDef;
+    bodyDef.type = bodyType;
+	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
+    return CreateCircle(world, bodyDef, radius);
 }
 
 b2Body* PhysicsHelper::CreateCircle(
     b2World* world, 
+    const b2BodyType& bodyType,
     const b2Vec2& position, 
     const float32& radius, 
     const float32& angle)
 {	
 	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
+	bodyDef.type = bodyType;
 	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
 	bodyDef.angle = angle;
 	
@@ -95,6 +100,7 @@ b2Body* PhysicsHelper::CreateCircle(
 
 b2Body* PhysicsHelper::CreateCircle(
     b2World* world, 
+    const b2BodyType& bodyType,
     const b2Vec2& start, 
     const b2Vec2& end)
 {
@@ -103,7 +109,7 @@ b2Body* PhysicsHelper::CreateCircle(
 	b2Vec2 pos = start;
 	
 	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
+	bodyDef.type = bodyType;
 	bodyDef.position.Set(pos.x/PTM_RATIO, pos.y/PTM_RATIO);
 	bodyDef.angle = GetAngle(start, end);
 	
@@ -119,18 +125,6 @@ b2Body* PhysicsHelper::CreateCircle(
 	body->CreateFixture(&fixtureDef);
 	
 	return body;
-}
-
-b2Body* PhysicsHelper::CreateCircle(
-    b2World* world, 
-    const b2BodyType& bodyType, 
-    const b2Vec2& position, 
-    const float32& radius)
-{
-    b2BodyDef bodyDef;
-    bodyDef.type = bodyType;
-	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
-    return CreateCircle(world, bodyDef, radius);
 }
 
 b2Body* PhysicsHelper::CreateBox(b2World* world, const b2Vec2& start, const b2Vec2& end)
